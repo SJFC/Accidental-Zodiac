@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta name="author" content="Sarah-Jane Crowson, ChatGPT (OpenAI) & Claude (Anthropic)">
+<title>Zodiacal Light: An Accidental Zodiac?</title>
+<style>
+:root{
+  --bg:#fbfbf9;
+  --ink:#162029;
+  --muted:#6b6b6b;
+  --accent:#b84b4b;
+  --serif: Georgia, 'Times New Roman', serif;
+  --ui: system-ui, -apple-system, 'Segoe UI', Roboto;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;font-family:var(--ui);background:var(--bg);color:var(--ink);line-height:1.45;
+}
+.container{max-width:760px;margin:32px auto;padding:24px}
+h1{font-family:var(--serif);font-size:2rem;margin:0 0 8px}
+.tagline{color:var(--muted);margin:0 0 18px}
+.step{margin-top:18px;padding:18px;background:rgba(255,255,255,0.6);border-radius:8px;box-shadow:0 6px 18px rgba(0,0,0,0.04)}
+.choices{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}
+button{background:#fff;border:1px solid #ddd;padding:10px 14px;border-radius:8px;cursor:pointer}
+button:hover{transform:translateY(-2px);box-shadow:0 6px 12px rgba(0,0,0,0.06)}
+.hidden{display:none}
+.epigraph{color:#667; font-style:italic; margin-top:20px; opacity:0.9}
+.credit{font-size:0.8rem;color:var(--muted);margin-top:22px}
+#result h2{font-family:var(--serif);font-size:1.4rem;margin:6px 0}
+#result h3{color:var(--accent);margin:4px 0}
+</style>
+</head>
+<body>
+<main class="container">
+  <header>
+    <h1>Zodiacal Light:<br>An Accidental Zodiac?</h1>
+    <p class="tagline">what starts in paper echoes code/ unfold a path to find a sign</p>
+  </header>
+  <section id="step1" class="step">
+    <h2>Choose what you do in the imaginary constellation</h2>
+    <div class="choices" id="verbs">
+      <button data-verb="Read">Read</button>
+      <button data-verb="Talk">Talk</button>
+      <button data-verb="Make">Make</button>
+      <button data-verb="Dream">Dream</button>
+    </div>
+  </section>
+  <section id="step2" class="step hidden">
+    <h2 id="prompt1">First prompt</h2>
+    <div class="choices" id="promptChoices"></div>
+  </section>
+  <section id="step3" class="step hidden">
+    <h2 id="prompt2">Second prompt</h2>
+    <div class="choices" id="promptChoices2"></div>
+  </section>
+  <section id="result" class="step hidden">
+    <h2 id="constellationName"></h2>
+    <h3 id="zodiacName"></h3>
+    <p id="reflection"></p>
+    <p class="epigraph">stars / in the night-cold grass</p>
+    <button id="restart">Try again</button>
+  </section>
+  <footer>
+    <p class="credit">Co-created by Sarah-Jane Crowson, ChatGPT (OpenAI) & Claude (Anthropic). Dialogic ideation, semiotic analysis and exploration of metaphor by Sarah-Jane Crowson & ChatGPT; initial logic by Crowson; coding and structure by ChatGPT; expansion and dual-path development by Claude.</p>
+  </footer>
+</main>
+<script>
+// Simple branching logic based on verb pairs mapping to constellations and zodiac names
+const pairings = {
+  'Read|Talk': ['The Constellation of Flying Ships','The Librarian'],
+  'Read|Make': ['The Constellation of Flying Turtles','The Ink Sleeper'],
+  'Read|Dream': ['The Constellation of Weighted Feathers','The Phoenix'],
+  'Talk|Read': ['The Constellation of Flying Keys','The Chained Thief'],
+  'Talk|Make': ['The Constellation of Fleeting Turtles','The Uncertain Armourer'],
+  'Talk|Dream': ['The Constellation of Fleeting Feathers','The Ink Sleeper'],
+  'Make|Read': ['The Constellation of Weighted Keys','The Unlocker of Space/Time'],
+  'Make|Talk': ['The Constellation of Weighted Ships','The Navigator'],
+  'Make|Dream': ['The Constellation of Weighted Birds','The Air-Teller'],
+  'Dream|Read': ['The Constellation of Lightened Keys','The Hypertext Driftwalker'],
+  'Dream|Talk': ['The Constellation of Lightened Ships','The Quixotic Marginalian'],
+  'Dream|Make': ['The Constellation of Lightened Turtles','The Uncertain Wanderer'],
+};
+
+const verbPrompts = {
+  'Read': {prompt:'You are a book cover. What is your title?', choices:['A Lonely Map','An Old Atlas','A Secret Bestiary']},
+  'Talk': {prompt:'Who do you listen to—owls or flowers?', choices:['Owls','Flowers']},
+  'Make': {prompt:'Origami crane or fortune teller?', choices:['Origami Crane','Fortune Teller']},
+  'Dream': {prompt:'The scent of pineapple feels like daydreams. Yes or No?', choices:['Yes','No']}
+};
+
+let firstVerb = null;
+let secondVerb = null;
+
+const verbsDiv = document.getElementById('verbs');
+const step1 = document.getElementById('step1');
+const step2 = document.getElementById('step2');
+const step3 = document.getElementById('step3');
+const result = document.getElementById('result');
+const promptChoices = document.getElementById('promptChoices');
+const promptChoices2 = document.getElementById('promptChoices2');
+const prompt1 = document.getElementById('prompt1');
+const prompt2 = document.getElementById('prompt2');
+const constellationName = document.getElementById('constellationName');
+const zodiacName = document.getElementById('zodiacName');
+const reflection = document.getElementById('reflection');
+const restart = document.getElementById('restart');
+
+verbsDiv.addEventListener('click', (e)=>{
+  if(e.target.tagName==='BUTTON'){
+    firstVerb = e.target.dataset.verb;
+    showPrompt1(firstVerb);
+    step1.classList.add('hidden');
+    step2.classList.remove('hidden');
+  }
+});
+
+function showPrompt1(verb){
+  const info = verbPrompts[verb];
+  prompt1.textContent = info.prompt;
+  promptChoices.innerHTML = '';
+  info.choices.forEach(c=>{
+    const btn = document.createElement('button');
+    btn.textContent = c;
+    btn.dataset.choice = c;
+    btn.addEventListener('click', ()=>{
+      // map to secondVerb selection heuristically (simple mapping)
+      // We'll choose secondVerb based on choice to demonstrate flow
+      if(verb==='Read'){
+        // map to Talk/Make/Dream slightly by choice
+        secondVerb = (c==='A Lonely Map') ? 'Talk' : (c==='An Old Atlas'? 'Make' : 'Dream');
+      } else if(verb==='Talk'){
+        secondVerb = (c==='Owls') ? 'Read' : 'Dream';
+      } else if(verb==='Make'){
+        secondVerb = (c==='Origami Crane') ? 'Dream' : 'Read';
+      } else if(verb==='Dream'){
+        secondVerb = (c==='Yes') ? 'Read' : 'Make';
+      }
+      step2.classList.add('hidden');
+      showPrompt2(secondVerb);
+      step3.classList.remove('hidden');
+    });
+    promptChoices.appendChild(btn);
+  });
+}
+
+function showPrompt2(verb){
+  const info = verbPrompts[verb] || {prompt:'Choose an act', choices:['A','B']};
+  prompt2.textContent = info.prompt;
+  promptChoices2.innerHTML = '';
+  info.choices.forEach(c=>{
+    const btn = document.createElement('button');
+    btn.textContent = c;
+    btn.dataset.choice = c;
+    btn.addEventListener('click', ()=>{
+      // On final choice, determine pairing
+      const key = firstVerb + '|' + verb;
+      const pair = pairings[key] || ['Constellation Unknown','The Wanderer'];
+      showResult(pair);
+      step3.classList.add('hidden');
+      result.classList.remove('hidden');
+    });
+    promptChoices2.appendChild(btn);
+  });
+}
+
+function showResult(pair){
+  constellationName.textContent = pair[0];
+  zodiacName.textContent = pair[1];
+  reflection.textContent = "You have completed your journey. Choose your small sign and dream of unexpected discoveries.";
+}
+
+restart.addEventListener('click', ()=>{
+  firstVerb = null; secondVerb = null;
+  step1.classList.remove('hidden');
+  step2.classList.add('hidden');
+  step3.classList.add('hidden');
+  result.classList.add('hidden');
+});
+</script>
+</body>
+</html>
