@@ -11,7 +11,7 @@
   --ink:#162029;
   --muted:#6b6b6b;
   --accent:#b84b4b;
-  --serif: Georgia, 'Times New Roman',  serif;
+  --serif: Georgia, 'Times New Roman', serif;
   --ui: system-ui, -apple-system, 'Segoe UI', Roboto;
 }
 *{box-sizing:border-box}
@@ -23,13 +23,29 @@ h1{font-family:var(--serif);font-size:2rem;margin:0 0 8px}
 .tagline{color:var(--muted);margin:0 0 18px}
 .step{margin-top:18px;padding:18px;background:rgba(255,255,255,0.6);border-radius:8px;box-shadow:0 6px 18px rgba(0,0,0,0.04)}
 .choices{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}
-button{background:#fff;border:1px solid #ddd;padding:10px 14px;border-radius:8px;cursor:pointer}
+button{background:#fff;border:1px solid #ddd;padding:10px 14px;border-radius:8px;cursor:pointer;font-family:var(--ui)}
 button:hover{transform:translateY(-2px);box-shadow:0 6px 12px rgba(0,0,0,0.06)}
 .hidden{display:none}
 .epigraph{color:#667; font-style:italic; margin-top:20px; opacity:0.9}
 .credit{font-size:0.8rem;color:var(--muted);margin-top:22px}
 #result h2{font-family:var(--serif);font-size:1.4rem;margin:6px 0}
 #result h3{color:var(--accent);margin:4px 0}
+
+/* Creature choice styles */
+.creature-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:20px}
+.creature-option{cursor:pointer;border:2px solid #ddd;border-radius:8px;padding:12px;background:#fff;transition:all 0.3s ease}
+.creature-option:hover{border-color:var(--accent);transform:translateY(-4px);box-shadow:0 8px 16px rgba(0,0,0,0.1)}
+.creature-option img{width:100%;height:auto;display:block;border-radius:4px}
+.creature-label{text-align:center;margin-top:10px;font-size:0.9rem;color:var(--muted);font-style:italic}
+
+/* Download page styles */
+.download-container{text-align:center}
+.download-preview{max-width:400px;margin:20px auto;border:2px solid #ddd;border-radius:8px;padding:10px;background:#fff}
+.download-preview img{width:100%;height:auto;display:block;border-radius:4px}
+.download-button{background:var(--accent);color:white;border:none;padding:14px 28px;font-size:1rem;margin:20px auto;display:inline-block;text-decoration:none;border-radius:8px;cursor:pointer}
+.download-button:hover{background:#a03d3d;transform:translateY(-2px)}
+.instructions{max-width:600px;margin:20px auto;padding:20px;background:rgba(255,255,255,0.8);border-radius:8px;text-align:left;line-height:1.6}
+.instructions h4{margin-top:0;color:var(--accent)}
 </style>
 </head>
 <body>
@@ -38,6 +54,8 @@ button:hover{transform:translateY(-2px);box-shadow:0 6px 12px rgba(0,0,0,0.06)}
     <h1>Zodiacal Light:<br>An Accidental Zodiac?</h1>
     <p class="tagline">what starts in paper echoes code/ unfold a path to find a sign</p>
   </header>
+  
+  <!-- Step 1: Choose initial verb -->
   <section id="step1" class="step">
     <h2>Choose your path to an imaginary constellation</h2>
     <div class="choices" id="verbs">
@@ -47,40 +65,88 @@ button:hover{transform:translateY(-2px);box-shadow:0 6px 12px rgba(0,0,0,0.06)}
       <button data-verb="Dream">Dream</button>
     </div>
   </section>
+  
+  <!-- Step 2: First prompt -->
   <section id="step2" class="step hidden">
     <h2 id="prompt1">First prompt</h2>
     <div class="choices" id="promptChoices"></div>
   </section>
+  
+  <!-- Step 3: Second prompt -->
   <section id="step3" class="step hidden">
     <h2 id="prompt2">Second prompt</h2>
     <div class="choices" id="promptChoices2"></div>
   </section>
+  
+  <!-- Step 4: Result with creature choice -->
   <section id="result" class="step hidden">
     <h2 id="constellationName"></h2>
     <h3 id="zodiacName"></h3>
-    <p id="reflection"></p>
+    <p id="reflection">You have completed your journey. Choose your zodiacal creature and dream of unexpected discoveries.</p>
     <p class="epigraph">stars / in the night-cold grass</p>
-    <button id="restart">Try again</button>
+    
+    <div class="creature-grid">
+      <div class="creature-option" data-type="human">
+        <img id="humanCreatureImg" src="" alt="Human-created creature">
+        <div class="creature-label">Human creature</div>
+      </div>
+      <div class="creature-option" data-type="ai">
+        <img id="aiCreatureImg" src="" alt="AI-generated creature">
+        <div class="creature-label">AI creature</div>
+      </div>
+    </div>
   </section>
+  
+  <!-- Step 5: Download page -->
+  <section id="download" class="step hidden">
+    <div class="download-container">
+      <h2 id="downloadTitle"></h2>
+      <p class="epigraph">stars / in the night-cold grass</p>
+      
+      <div class="download-preview">
+        <img id="downloadPreview" src="" alt="Your chosen creature">
+      </div>
+      
+      <a id="downloadButton" class="download-button" href="" download>Download PDF</a>
+      
+      <div class="instructions">
+        <h4>🌱 Print & Plant</h4>
+        <ul>
+          <li><strong>Print</strong> on seeded paper (search "inkjet printable seeded paper") or regular paper</li>
+          <li><strong>Cut</strong> along the dotted line</li>
+          <li><strong>Wear</strong> as talisman, brooch, or bookmark</li>
+          <li><strong>When worn/tatty:</strong> plant or compost to return to earth</li>
+        </ul>
+        
+        <p style="margin-top:20px;font-style:italic;color:var(--muted);">
+          Beyond this path: plant a tree, support reforestation, or share creative practices.
+        </p>
+      </div>
+      
+      <button id="restart2">Start a new journey</button>
+    </div>
+  </section>
+  
   <footer>
     <p class="credit">Co-created by Sarah-Jane Crowson, ChatGPT (OpenAI) & Claude (Anthropic). Dialogic ideation, semiotic analysis and exploration of metaphor by Sarah-Jane Crowson & ChatGPT; initial logic by Crowson; coding and structure by ChatGPT; expansion and dual-path development by Claude.</p>
   </footer>
 </main>
+
 <script>
-// Simple branching logic based on verb pairs mapping to constellations and zodiac names
+// Constellation pairings with creature file names
 const pairings = {
-  'Read|Talk': ['The Constellation of Flying Ships','The Librarian'],
-  'Read|Make': ['The Constellation of Flying Turtles','The Ink Sleeper'],
-  'Read|Dream': ['The Constellation of Weighted Feathers','The Phoenix'],
-  'Talk|Read': ['The Constellation of Flying Keys','The Chained Thief'],
-  'Talk|Make': ['The Constellation of Fleeting Turtles','The Uncertain Armourer'],
-  'Talk|Dream': ['The Constellation of Fleeting Feathers','The Ink Sleeper'],
-  'Make|Read': ['The Constellation of Weighted Keys','The Unlocker of Space/Time'],
-  'Make|Talk': ['The Constellation of Weighted Ships','The Navigator'],
-  'Make|Dream': ['The Constellation of Weighted Birds','The Air-Teller'],
-  'Dream|Read': ['The Constellation of Lightened Keys','The Hypertext Driftwalker'],
-  'Dream|Talk': ['The Constellation of Lightened Ships','The Quixotic Marginalian'],
-  'Dream|Make': ['The Constellation of Lightened Turtles','The Uncertain Wanderer'],
+  'Read|Talk': ['The Constellation of Flying Ships', 'The Librarian', 'librarian'],
+  'Read|Make': ['The Constellation of Flying Turtles', 'The Ink Sleeper', 'ink-sleeper'],
+  'Read|Dream': ['The Constellation of Weighted Feathers', 'The Phoenix', 'phoenix'],
+  'Talk|Read': ['The Constellation of Flying Keys', 'The Chained Thief', 'chained-thief'],
+  'Talk|Make': ['The Constellation of Fleeting Turtles', 'The Uncertain Armourer', 'uncertain-armourer'],
+  'Talk|Dream': ['The Constellation of Fleeting Feathers', 'The Ink Sleeper', 'ink-sleeper'],
+  'Make|Read': ['The Constellation of Weighted Keys', 'The Unlocker of Space/Time', 'unlocker'],
+  'Make|Talk': ['The Constellation of Weighted Ships', 'The Navigator', 'navigator'],
+  'Make|Dream': ['The Constellation of Weighted Birds', 'The Air-Teller', 'air-teller'],
+  'Dream|Read': ['The Constellation of Lightened Keys', 'The Hypertext Driftwalker', 'hypertext-driftwalker'],
+  'Dream|Talk': ['The Constellation of Lightened Ships', 'The Quixotic Marginalian', 'quixotic-marginalian'],
+  'Dream|Make': ['The Constellation of Lightened Turtles', 'The Uncertain Wanderer', 'uncertain-wanderer'],
 };
 
 const verbPrompts = {
@@ -92,23 +158,31 @@ const verbPrompts = {
 
 let firstVerb = null;
 let secondVerb = null;
+let currentCreature = null;
 
-const verbsDiv = document.getElementById('verbs');
+// DOM elements
 const step1 = document.getElementById('step1');
 const step2 = document.getElementById('step2');
 const step3 = document.getElementById('step3');
 const result = document.getElementById('result');
+const download = document.getElementById('download');
+const verbsDiv = document.getElementById('verbs');
 const promptChoices = document.getElementById('promptChoices');
 const promptChoices2 = document.getElementById('promptChoices2');
 const prompt1 = document.getElementById('prompt1');
 const prompt2 = document.getElementById('prompt2');
 const constellationName = document.getElementById('constellationName');
 const zodiacName = document.getElementById('zodiacName');
-const reflection = document.getElementById('reflection');
-const restart = document.getElementById('restart');
+const humanCreatureImg = document.getElementById('humanCreatureImg');
+const aiCreatureImg = document.getElementById('aiCreatureImg');
+const downloadTitle = document.getElementById('downloadTitle');
+const downloadPreview = document.getElementById('downloadPreview');
+const downloadButton = document.getElementById('downloadButton');
+const restart2 = document.getElementById('restart2');
 
-verbsDiv.addEventListener('click', (e)=>{
-  if(e.target.tagName==='BUTTON'){
+// Step 1: Choose verb
+verbsDiv.addEventListener('click', (e) => {
+  if(e.target.tagName === 'BUTTON'){
     firstVerb = e.target.dataset.verb;
     showPrompt1(firstVerb);
     step1.classList.add('hidden');
@@ -120,22 +194,19 @@ function showPrompt1(verb){
   const info = verbPrompts[verb];
   prompt1.textContent = info.prompt;
   promptChoices.innerHTML = '';
-  info.choices.forEach(c=>{
+  info.choices.forEach(c => {
     const btn = document.createElement('button');
     btn.textContent = c;
-    btn.dataset.choice = c;
-    btn.addEventListener('click', ()=>{
-      // map to secondVerb selection heuristically (simple mapping)
-      // We'll choose secondVerb based on choice to demonstrate flow
-      if(verb==='Read'){
-        // map to Talk/Make/Dream slightly by choice
-        secondVerb = (c==='A Lonely Map') ? 'Talk' : (c==='An Old Atlas'? 'Make' : 'Dream');
-      } else if(verb==='Talk'){
-        secondVerb = (c==='Owls') ? 'Read' : 'Dream';
-      } else if(verb==='Make'){
-        secondVerb = (c==='Origami Crane') ? 'Dream' : 'Read';
-      } else if(verb==='Dream'){
-        secondVerb = (c==='Yes') ? 'Read' : 'Make';
+    btn.addEventListener('click', () => {
+      // Map to second verb
+      if(verb === 'Read'){
+        secondVerb = (c === 'A Lonely Map') ? 'Talk' : (c === 'An Old Atlas' ? 'Make' : 'Dream');
+      } else if(verb === 'Talk'){
+        secondVerb = (c === 'Owls') ? 'Read' : 'Dream';
+      } else if(verb === 'Make'){
+        secondVerb = (c === 'Origami Crane') ? 'Dream' : 'Read';
+      } else if(verb === 'Dream'){
+        secondVerb = (c === 'Yes') ? 'Read' : 'Make';
       }
       step2.classList.add('hidden');
       showPrompt2(secondVerb);
@@ -149,14 +220,12 @@ function showPrompt2(verb){
   const info = verbPrompts[verb] || {prompt:'Choose an act', choices:['A','B']};
   prompt2.textContent = info.prompt;
   promptChoices2.innerHTML = '';
-  info.choices.forEach(c=>{
+  info.choices.forEach(c => {
     const btn = document.createElement('button');
     btn.textContent = c;
-    btn.dataset.choice = c;
-    btn.addEventListener('click', ()=>{
-      // On final choice, determine pairing
+    btn.addEventListener('click', () => {
       const key = firstVerb + '|' + verb;
-      const pair = pairings[key] || ['Constellation Unknown','The Wanderer'];
+      const pair = pairings[key] || ['Constellation Unknown', 'The Wanderer', 'wanderer'];
       showResult(pair);
       step3.classList.add('hidden');
       result.classList.remove('hidden');
@@ -166,17 +235,44 @@ function showPrompt2(verb){
 }
 
 function showResult(pair){
+  currentCreature = pair[2]; // filename base
   constellationName.textContent = pair[0];
   zodiacName.textContent = pair[1];
-  reflection.textContent = "You have completed your journey. Choose your zodiacal creature and dream of unexpected discoveries.";
+  
+  // Set image sources
+  humanCreatureImg.src = `creatures/${currentCreature}-human.jpg`;
+  aiCreatureImg.src = `creatures/${currentCreature}-ai.jpg`;
 }
 
-restart.addEventListener('click', ()=>{
-  firstVerb = null; secondVerb = null;
+// Creature choice handlers
+document.querySelectorAll('.creature-option').forEach(option => {
+  option.addEventListener('click', (e) => {
+    const type = e.currentTarget.dataset.type;
+    showDownload(type);
+    result.classList.add('hidden');
+    download.classList.remove('hidden');
+  });
+});
+
+function showDownload(type){
+  const creatureType = type === 'human' ? 'Human creature' : 'AI creature';
+  downloadTitle.textContent = `Your ${creatureType}`;
+  downloadPreview.src = `creatures/${currentCreature}-${type}.jpg`;
+  downloadButton.href = `pdfs/${currentCreature}-${type}.pdf`;
+  downloadButton.download = `${currentCreature}-${type}.pdf`;
+}
+
+// Restart button
+restart2.addEventListener('click', () => {
+  firstVerb = null;
+  secondVerb = null;
+  currentCreature = null;
   step1.classList.remove('hidden');
   step2.classList.add('hidden');
   step3.classList.add('hidden');
   result.classList.add('hidden');
+  download.classList.add('hidden');
+  window.scrollTo(0, 0);
 });
 </script>
 </body>
