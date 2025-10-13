@@ -20,7 +20,7 @@ Further post-pilot iterations hope to include ways that printed-out objects can 
 
 ## Related Work
 
-This project evolved from the [Library Zodiac](https://github.com/SJFC/Library-zodiac) prototype.
+This project evolved from the [Library Zodiac]((https://sjfc.github.io/Accidental-Zodiac/)) prototype.
 
 ## Ethical Collaboration & Credits
 
