@@ -34,11 +34,11 @@ This project evolved from the [Library Zodiac]((https://sjfc.github.io/Accidenta
 
 **Text refinements, expansion planning, and dual-path system development:** Claude (Anthropic) - collaborative development of the current version
 
-**Methodology for Ai-generated image prompts (using surrealist techniques and templates) collaboratively developed with Outlier Playground training model
+Methodology for Ai-generated image prompts (using surrealist techniques and templates) collaboratively developed with Outlier Playground training model
 
 ## How to Experience
 
-[View the live project here](https://sjfc.github.io/Accidental-zodiac/)
+[View the live project here](https://sjfc.github.io/Accidental-Zodiac/)
 
 ## Technical Notes
 
