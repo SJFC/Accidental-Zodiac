@@ -255,7 +255,7 @@ document.querySelectorAll('.creature-option').forEach(option => {
 });
 
 function showDownload(type){
-  const creatureType = type === 'human' ? 'Human creature' : 'AI creature';
+  const creatureType = type === 'human' ? 'Human-gen creature' : 'AI-gen creature';
   downloadTitle.textContent = `Your ${creatureType}`;
   downloadPreview.src = `creatures/${currentCreature}-${type}.jpg`;
   downloadButton.href = `pdfs/${currentCreature}-${type}.pdf`;
