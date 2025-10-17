@@ -110,12 +110,12 @@ button:hover{transform:translateY(-2px);box-shadow:0 6px 12px rgba(0,0,0,0.06)}
       <a id="downloadButton" class="download-button" href="" download>Download PDF</a>
       
       <div class="instructions">
-        <h4>Print & Plant</h4>
+        <h4>🌱 Print & Plant</h4>
         <ul>
           <li><strong>Print</strong> on seeded paper (search "inkjet printable seeded paper") or regular paper</li>
-          <li><strong>Cut</strong> out your zodiac creature</li>
-          <li><strong>Wear</strong> as talisman, brooch, or use as a bookmark</li>
-          <li><strong>When worn:</strong> plant or compost to return to earth</li>
+          <li><strong>Cut</strong> along the dotted line</li>
+          <li><strong>Wear</strong> as talisman, brooch, or bookmark</li>
+          <li><strong>When worn/tatty:</strong> plant or compost to return to earth</li>
         </ul>
         
         <p style="margin-top:20px;font-style:italic;color:var(--muted);">
@@ -133,31 +133,134 @@ button:hover{transform:translateY(-2px);box-shadow:0 6px 12px rgba(0,0,0,0.06)}
 </main>
 
 <script>
-// Constellation pairings with creature file names
-const pairings = {
-  'Read|Talk': ['The Constellation of Flying Ships', 'The Librarian', 'librarian'],
-  'Read|Make': ['The Constellation of Flying Turtles', 'The Ink Sleeper', 'ink-sleeper'],
-  'Read|Dream': ['The Constellation of Weighted Feathers', 'The Phoenix', 'phoenix'],
-  'Talk|Read': ['The Constellation of Flying Keys', 'The Chained Thief', 'chained-thief'],
-  'Talk|Make': ['The Constellation of Fleeting Turtles', 'The Uncertain Armourer', 'uncertain-armourer'],
-  'Talk|Dream': ['The Constellation of Fleeting Feathers', 'The Ink Sleeper', 'ink-sleeper'],
-  'Make|Read': ['The Constellation of Weighted Keys', 'The Unlocker of Space/Time', 'unlocker'],
-  'Make|Talk': ['The Constellation of Weighted Ships', 'The Navigator', 'navigator'],
-  'Make|Dream': ['The Constellation of Weighted Birds', 'The Air-Teller', 'air-teller'],
-  'Dream|Read': ['The Constellation of Lightened Keys', 'The Hypertext Driftwalker', 'hypertext-driftwalker'],
-  'Dream|Talk': ['The Constellation of Lightened Ships', 'The Quixotic Marginalian', 'quixotic-marginalian'],
-  'Dream|Make': ['The Constellation of Lightened Turtles', 'The Uncertain Wanderer', 'uncertain-wanderer'],
+// New branching logic based on updated decision tree
+const creatureData = {
+  'uncertain-wanderer': ['The Constellation of Lightened Turtles', 'The Uncertain Wanderer'],
+  'quixotic-marginalian': ['The Constellation of Lightened Ships', 'The Quixotic Marginalian'],
+  'chained-thief': ['The Constellation of Flying Keys', 'The Chained Thief'],
+  'ink-sleeper': ['The Constellation of Fleeting Feathers', 'The Ink Sleeper'],
+  'uncertain-armourer': ['The Constellation of Fleeting Turtles', 'The Uncertain Armourer'],
+  'hypertext-driftwalker': ['The Constellation of Lightened Keys', 'The Hypertext Driftwalker'],
+  'librarian': ['The Constellation of Flying Ships', 'The Librarian']
 };
 
-const verbPrompts = {
-  'Read': {prompt:'You are a book cover. What is your title?', choices:['A Lonely Map','An Old Atlas','A Secret Bestiary']},
-  'Talk': {prompt:'Who do you listen to—owls or flowers?', choices:['Owls','Flowers']},
-  'Make': {prompt:'Origami crane or fortune teller?', choices:['Origami Crane','Fortune Teller']},
-  'Dream': {prompt:'The scent of pineapple feels like daydreams. Yes or No?', choices:['Yes','No']}
+const pathLogic = {
+  'Talk': {
+    question1: {
+      text: 'Who do you listen to, owls or flowers?',
+      choices: ['Owls', 'Flowers'],
+      branches: {
+        'Owls': {
+          question2: {
+            text: 'Eyes speak louder than words. True or false?',
+            choices: ['True', 'False'],
+            results: {
+              'True': 'uncertain-wanderer',
+              'False': 'quixotic-marginalian'
+            }
+          }
+        },
+        'Flowers': {
+          question2: {
+            text: 'Talk sand-shapes, shifting and leaving on each tide. True or false?',
+            choices: ['True', 'False'],
+            results: {
+              'True': 'quixotic-marginalian',
+              'False': 'chained-thief'
+            }
+          }
+        }
+      }
+    }
+  },
+  'Make': {
+    question1: {
+      text: 'My song is glimpsed across the crashing waves?',
+      choices: ['Yes', 'No'],
+      branches: {
+        'Yes': {
+          question2: {
+            text: 'Only the trees can hear me?',
+            choices: ['True', 'False'],
+            results: {
+              'True': 'quixotic-marginalian',
+              'False': 'uncertain-wanderer'
+            }
+          }
+        },
+        'No': {
+          question2: {
+            text: 'Ideas fly first, then are trapped to be polished?',
+            choices: ['True', 'False'],
+            results: {
+              'True': 'ink-sleeper',
+              'False': 'uncertain-armourer'
+            }
+          }
+        }
+      }
+    }
+  },
+  'Read': {
+    question1: {
+      text: 'The sea and the spoken word or the sea and the salted whisper?',
+      choices: ['Spoken Word', 'Whisper'],
+      branches: {
+        'Spoken Word': {
+          question2: {
+            text: 'The world stills to the beat of my heart',
+            choices: ['True', 'False'],
+            results: {
+              'True': 'hypertext-driftwalker',
+              'False': 'ink-sleeper'
+            }
+          }
+        },
+        'Whisper': {
+          question2: {
+            text: 'Everything must be symmetrical. True or False?',
+            choices: ['True', 'False'],
+            results: {
+              'True': 'ink-sleeper',
+              'False': 'librarian'
+            }
+          }
+        }
+      }
+    }
+  },
+  'Dream': {
+    question1: {
+      text: 'Throw off those corseted expressions. The M5 or Silk Roads?',
+      choices: ['M5', 'Silk Roads'],
+      branches: {
+        'M5': {
+          question2: {
+            text: 'I see my life in paper folds. True or False?',
+            choices: ['True', 'False'],
+            results: {
+              'True': 'librarian',
+              'False': 'hypertext-driftwalker'
+            }
+          }
+        },
+        'Silk Roads': {
+          question2: {
+            text: 'Dream only when you don\'t know what to write',
+            choices: ['True', 'False'],
+            results: {
+              'True': 'quixotic-marginalian',
+              'False': 'hypertext-driftwalker'
+            }
+          }
+        }
+      }
+    }
+  }
 };
 
-let firstVerb = null;
-let secondVerb = null;
+let currentPath = null;
+let firstChoice = null;
 let currentCreature = null;
 
 // DOM elements
@@ -180,53 +283,47 @@ const downloadPreview = document.getElementById('downloadPreview');
 const downloadButton = document.getElementById('downloadButton');
 const restart2 = document.getElementById('restart2');
 
-// Step 1: Choose verb
+// Step 1: Choose initial path
 verbsDiv.addEventListener('click', (e) => {
   if(e.target.tagName === 'BUTTON'){
-    firstVerb = e.target.dataset.verb;
-    showPrompt1(firstVerb);
+    currentPath = e.target.dataset.verb;
+    showQuestion1();
     step1.classList.add('hidden');
     step2.classList.remove('hidden');
   }
 });
 
-function showPrompt1(verb){
-  const info = verbPrompts[verb];
-  prompt1.textContent = info.prompt;
+function showQuestion1(){
+  const pathData = pathLogic[currentPath];
+  prompt1.textContent = pathData.question1.text;
   promptChoices.innerHTML = '';
-  info.choices.forEach(c => {
+  
+  pathData.question1.choices.forEach(choice => {
     const btn = document.createElement('button');
-    btn.textContent = c;
+    btn.textContent = choice;
     btn.addEventListener('click', () => {
-      // Map to second verb
-      if(verb === 'Read'){
-        secondVerb = (c === 'A Lonely Map') ? 'Talk' : (c === 'An Old Atlas' ? 'Make' : 'Dream');
-      } else if(verb === 'Talk'){
-        secondVerb = (c === 'Owls') ? 'Read' : 'Dream';
-      } else if(verb === 'Make'){
-        secondVerb = (c === 'Origami Crane') ? 'Dream' : 'Read';
-      } else if(verb === 'Dream'){
-        secondVerb = (c === 'Yes') ? 'Read' : 'Make';
-      }
+      firstChoice = choice;
+      showQuestion2();
       step2.classList.add('hidden');
-      showPrompt2(secondVerb);
       step3.classList.remove('hidden');
     });
     promptChoices.appendChild(btn);
   });
 }
 
-function showPrompt2(verb){
-  const info = verbPrompts[verb] || {prompt:'Choose an act', choices:['A','B']};
-  prompt2.textContent = info.prompt;
+function showQuestion2(){
+  const pathData = pathLogic[currentPath];
+  const branchData = pathData.question1.branches[firstChoice];
+  
+  prompt2.textContent = branchData.question2.text;
   promptChoices2.innerHTML = '';
-  info.choices.forEach(c => {
+  
+  branchData.question2.choices.forEach(choice => {
     const btn = document.createElement('button');
-    btn.textContent = c;
+    btn.textContent = choice;
     btn.addEventListener('click', () => {
-      const key = firstVerb + '|' + verb;
-      const pair = pairings[key] || ['Constellation Unknown', 'The Wanderer', 'wanderer'];
-      showResult(pair);
+      const creatureKey = branchData.question2.results[choice];
+      showResult(creatureKey);
       step3.classList.add('hidden');
       result.classList.remove('hidden');
     });
@@ -234,14 +331,15 @@ function showPrompt2(verb){
   });
 }
 
-function showResult(pair){
-  currentCreature = pair[2]; // filename base
-  constellationName.textContent = pair[0];
-  zodiacName.textContent = pair[1];
+function showResult(creatureKey){
+  currentCreature = creatureKey;
+  const creature = creatureData[creatureKey];
   
-  // Set image sources
-  humanCreatureImg.src = `creatures/${currentCreature}-human.jpg`;
-  aiCreatureImg.src = `creatures/${currentCreature}-ai.jpg`;
+  constellationName.textContent = creature[0];
+  zodiacName.textContent = creature[1];
+  
+  humanCreatureImg.src = `creatures/${creatureKey}-human.jpg`;
+  aiCreatureImg.src = `creatures/${creatureKey}-ai.jpg`;
 }
 
 // Creature choice handlers
@@ -255,7 +353,7 @@ document.querySelectorAll('.creature-option').forEach(option => {
 });
 
 function showDownload(type){
-  const creatureType = type === 'human' ? 'Human-gen creature' : 'AI-gen creature';
+  const creatureType = type === 'human' ? 'Human creature' : 'AI creature';
   downloadTitle.textContent = `Your ${creatureType}`;
   downloadPreview.src = `creatures/${currentCreature}-${type}.jpg`;
   downloadButton.href = `pdfs/${currentCreature}-${type}.pdf`;
@@ -264,8 +362,8 @@ function showDownload(type){
 
 // Restart button
 restart2.addEventListener('click', () => {
-  firstVerb = null;
-  secondVerb = null;
+  currentPath = null;
+  firstChoice = null;
   currentCreature = null;
   step1.classList.remove('hidden');
   step2.classList.add('hidden');
